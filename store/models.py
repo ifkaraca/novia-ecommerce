@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 from django.contrib.auth.models import User
 
 # Create your models here.
@@ -12,7 +13,7 @@ class Category(models.Model):
         verbose_name="Üst Kategori"
     )
     name = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=60, unique=True)
+    slug = models.SlugField(max_length=60, unique=True,editable=True)
     
     class Meta:
         # Benzersizlik kuralı: Aynı üst kategoride aynı isimde iki kategori olamaz
@@ -27,6 +28,14 @@ class Category(models.Model):
             full_path.append(k.name)
             k = k.parent
         return ' > '.join(full_path[::-1])
+    
+    def save(self, *args, **kwargs):
+    # Eğer slug alanı boşsa, name'den üret
+        if not self.slug:
+            self.slug = slugify(self.name)
+        
+        # Eğer slug doluysa dokunma (Admin panelinden gelen veriyi koru)
+        super().save(*args, **kwargs)
     
 
 class Product(models.Model):
@@ -71,3 +80,13 @@ class Product(models.Model):
             discount_amount = (self.price * self.discount_rate) / 100
             return self.price - discount_amount
         return self.price
+    
+    def save(self, *args, **kwargs):
+    # Eğer slug alanı boşsa, name'den üret
+        if not self.slug:
+            self.slug = slugify(self.name)
+        
+        # Eğer slug doluysa dokunma (Admin panelinden gelen veriyi koru)
+        super().save(*args, **kwargs)
+
+    
