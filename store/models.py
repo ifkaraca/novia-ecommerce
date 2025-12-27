@@ -53,7 +53,19 @@ class Vendor(models.Model):
     def __str__(self):
         return self.name
     
+class Attribute(models.Model):
+    name=models.CharField(max_length=50, verbose_name="Özellik Adı")
+    categories = models.ManyToManyField(Category, related_name="attributes",blank=True)
 
+    def __str__(self):
+        return self.name
+    
+class AttributeValue(models.Model):
+    attribute = models.ForeignKey(Attribute,related_name="values",on_delete=models.CASCADE)
+    value= models.CharField(max_length=50,verbose_name="Değer")
+
+    def __str__(self):
+        return f"{self.attribute.name}: {self.value}"
 
 class Product(models.Model):
     # ... (Kategori ve Vendor kısımları aynı kalacak) ...
@@ -71,9 +83,7 @@ class Product(models.Model):
     
     # İndirim oranı (Varsayılan 0, yani indirim yok)
     discount_rate = models.IntegerField(default=0, verbose_name="İndirim Oranı (%)")
-    
-    # Stok ve Durum
-    stock = models.IntegerField(default=0)
+   
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -105,3 +115,21 @@ class Product(models.Model):
         
         # Eğer slug doluysa dokunma (Admin panelinden gelen veriyi koru)
         super().save(*args, **kwargs)
+
+class ProductVariant(models.Model):
+    product = models.ForeignKey(Product, related_name="variants",on_delete=models.CASCADE)
+    attribute_values = models.ManyToManyField(AttributeValue, related_name='product_variants')
+    image = models.ImageField(upload_to="products/variants/", blank=True, null=True)
+    stock = models.IntegerField(default=0, verbose_name="Stok Adedi")
+    price_override = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Fiyat Farkı (+/-)")
+
+    def __str__(self):
+        return f"{self.product.name} (Varyasyon ID: {self.id})"
+    
+class ProductImages(models.Model):
+    product = models.ForeignKey(Product,related_name="images", on_delete=models.CASCADE)
+    variant = models.ForeignKey(ProductVariant, related_name='images', blank=True, null=True, on_delete=models.SET_NULL)
+    image = models.ImageField(upload_to="products/gallery/", verbose_name="Galeri Resmi")
+
+    def __str__(self):
+        return f"{self.product.name} - Resim {self.id}"
