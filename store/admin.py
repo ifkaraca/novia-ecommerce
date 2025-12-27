@@ -48,4 +48,4 @@ class ProductAdmin(admin.ModelAdmin):
 class VendorAdmin(admin.ModelAdmin):
     list_display = ("user","name","is_active","created_at")
     search_fields = ['name']
-    list_filter = ("is_active")
+    list_filter = ("is_active",)
