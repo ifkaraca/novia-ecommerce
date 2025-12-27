@@ -44,11 +44,21 @@ class Category(models.Model):
         # Eğer slug doluysa dokunma (Admin panelinden gelen veriyi koru)
         super().save(*args, **kwargs)
     
+class Vendor(models.Model):
+    user=models.OneToOneField(User, related_name='vendor', on_delete=models.CASCADE)
+    name= models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now=True)
+    is_active=models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+    
+
 
 class Product(models.Model):
     # ... (Kategori ve Vendor kısımları aynı kalacak) ...
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
-    vendor = models.ForeignKey(User, related_name='products', on_delete=models.CASCADE)
+    vendor = models.ForeignKey(Vendor, related_name='products', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=150)
     description = models.TextField(blank=True, null=True)
@@ -95,13 +105,3 @@ class Product(models.Model):
         
         # Eğer slug doluysa dokunma (Admin panelinden gelen veriyi koru)
         super().save(*args, **kwargs)
-
-class Vendor(models.Model):
-    user=models.OneToOneField(User, related_name='vendor', on_delete=models.CASCADE)
-    name= models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now=True)
-    is_active=models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.name
-    
