@@ -14,6 +14,13 @@ class Category(models.Model):
     )
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=60, unique=True,editable=True)
+    icon_class = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True, 
+        verbose_name="İkon Sınıfı (FontAwesome)",
+        help_text="İkon kodlarını <a href='https://fontawesome.com/search?o=r&m=free' target='_blank'>buradan</a> bulup kopyalayın. Örn: <b>fa-solid fa-laptop</b>"
+    )
     
     class Meta:
         # Benzersizlik kuralı: Aynı üst kategoride aynı isimde iki kategori olamaz
