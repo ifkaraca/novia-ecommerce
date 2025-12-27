@@ -96,4 +96,12 @@ class Product(models.Model):
         # Eğer slug doluysa dokunma (Admin panelinden gelen veriyi koru)
         super().save(*args, **kwargs)
 
+class Vendor(models.Model):
+    user=models.OneToOneField(User, related_name='vendor', on_delete=models.CASCADE)
+    name= models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now=True)
+    is_active=models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
     
