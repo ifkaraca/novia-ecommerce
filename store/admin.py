@@ -3,9 +3,10 @@ from .models import Category,Product
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name","slug",)
+    list_display = ("name","slug","parent",)
     search_fields = ["name"]
     prepopulated_fields = {"slug":('name',)}
+    list_filter = ("parent",)
 
 
 @admin.register(Product)
