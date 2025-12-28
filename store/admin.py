@@ -6,7 +6,8 @@ from .models import (
     Attribute,
     AttributeValue,
     ProductImages,
-    ProductVariant)
+    ProductVariant,
+    Brand)
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -37,8 +38,8 @@ class ProductVariantInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("name","category","price","discount_rate","is_active","vendor",)
-    list_filter = ("category","vendor","is_active")
+    list_display = ("name","category","brand","price","discount_rate","is_active","vendor",)
+    list_filter = ("category","vendor","is_active","brand",)
     search_fields = ["name"]
     prepopulated_fields = {"slug":('name',)}
     inlines = [ProductVariantInline, ProductImageInline]
@@ -48,3 +49,10 @@ class VendorAdmin(admin.ModelAdmin):
     list_display = ("user","name","is_active","created_at")
     search_fields = ['name']
     list_filter = ("is_active",)
+
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    list_display = ("name","slug","is_active",)
+    search_fields = ['name']
+    prepopulated_fields = {"slug":("name",)}
+
