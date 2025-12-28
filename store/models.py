@@ -67,10 +67,28 @@ class AttributeValue(models.Model):
     def __str__(self):
         return f"{self.attribute.name}: {self.value}"
 
+class Brand(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Marka Adı")
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
+    logo = models.ImageField(upload_to="brands/", blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    class meta:
+        verbose_name_plural = 'Markalar'
+    
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args,**kwargs)
+
 class Product(models.Model):
     # ... (Kategori ve Vendor kısımları aynı kalacak) ...
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, related_name='products', on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, related_name='products', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=150)
     description = models.TextField(blank=True, null=True)
@@ -133,3 +151,4 @@ class ProductImages(models.Model):
 
     def __str__(self):
         return f"{self.product.name} - Resim {self.id}"
+    
