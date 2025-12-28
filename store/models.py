@@ -88,7 +88,7 @@ class Product(models.Model):
     # ... (Kategori ve Vendor kısımları aynı kalacak) ...
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, related_name='products', on_delete=models.CASCADE)
-    brand = models.ForeignKey(Brand, related_name='products', on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, related_name='products', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Marka")
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=150)
     description = models.TextField(blank=True, null=True)
