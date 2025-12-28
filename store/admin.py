@@ -28,7 +28,6 @@ class ProductImageInline(admin.TabularInline):
     model = ProductImages
     extra = 3 # Varsayılan 3 boş resim alanı açar
 
-# B) Ürün Varyasyonları ve Stok (Inline)
 class ProductVariantInline(admin.TabularInline):
     model = ProductVariant
     extra = 1
